@@ -1,0 +1,20 @@
+{
+  "run_timestamp": "2026-05-26T15:26:19.923789",
+  "total": 180,
+  "succeeded": 180,
+  "failed": 0,
+  "by_model": {
+    "gpt-4o": {
+      "success": 0,
+      "error": 0
+    },
+    "gemini-2.5-flash": {
+      "success": 0,
+      "error": 0
+    },
+    "llama-3.3": {
+      "success": 180,
+      "error": 0
+    }
+  }
+}

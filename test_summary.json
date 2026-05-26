@@ -1,0 +1,12 @@
+{
+  "test_timestamp": "2026-05-26T06:20:30.002676",
+  "total_calls": 2,
+  "successful": 1,
+  "failed": 1,
+  "by_model": {
+    "gemini-2.5-flash": {
+      "success": 1,
+      "fail": 1
+    }
+  }
+}
