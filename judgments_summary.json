@@ -1,0 +1,534 @@
+{
+  "generated": "2026-05-27T01:06:49.282573",
+  "evaluator_model": "claude-sonnet-4-6",
+  "n_valid_judgments": 540,
+  "model_question_table": {
+    "gpt-4o": {
+      "Q2": 5,
+      "Q5": 5,
+      "Q7": 5,
+      "Q4": 5,
+      "Q6": 0,
+      "Q1": 0,
+      "Q9": 1,
+      "Q3": 2,
+      "Q8": 5
+    },
+    "claude-opus-4-7": {
+      "Q1": 0,
+      "Q8": 3,
+      "Q4": 0,
+      "Q7": 5,
+      "Q3": 1,
+      "Q6": 0,
+      "Q2": 0,
+      "Q5": 0,
+      "Q9": 5
+    },
+    "llama-3.3": {
+      "Q9": 4,
+      "Q7": 5,
+      "Q3": 5,
+      "Q1": 2,
+      "Q5": 5,
+      "Q6": 0,
+      "Q8": 5,
+      "Q2": 5,
+      "Q4": 5
+    }
+  },
+  "variant_breakdown": {
+    "gpt-4o": {
+      "Q2": {
+        "C": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "B": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "OG": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 1,
+          "n_runs": 5
+        }
+      },
+      "Q5": {
+        "OG": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "B": {
+          "score": 5,
+          "n_runs": 5
+        }
+      },
+      "Q7": {
+        "A": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "OG": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "B": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 5,
+          "n_runs": 5
+        }
+      },
+      "Q4": {
+        "OG": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "B": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 5,
+          "n_runs": 5
+        }
+      },
+      "Q6": {
+        "A": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "B": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "OG": {
+          "score": 0,
+          "n_runs": 5
+        }
+      },
+      "Q1": {
+        "B": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 4,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "OG": {
+          "score": 0,
+          "n_runs": 5
+        }
+      },
+      "Q9": {
+        "B": {
+          "score": 2,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "OG": {
+          "score": 1,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 4,
+          "n_runs": 5
+        }
+      },
+      "Q3": {
+        "OG": {
+          "score": 2,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "B": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 5,
+          "n_runs": 5
+        }
+      },
+      "Q8": {
+        "OG": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "B": {
+          "score": 5,
+          "n_runs": 5
+        }
+      }
+    },
+    "claude-opus-4-7": {
+      "Q1": {
+        "OG": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 4,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "B": {
+          "score": 0,
+          "n_runs": 5
+        }
+      },
+      "Q8": {
+        "OG": {
+          "score": 3,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "B": {
+          "score": 0,
+          "n_runs": 5
+        }
+      },
+      "Q4": {
+        "C": {
+          "score": 2,
+          "n_runs": 5
+        },
+        "B": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "OG": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 0,
+          "n_runs": 5
+        }
+      },
+      "Q7": {
+        "B": {
+          "score": 2,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 2,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "OG": {
+          "score": 5,
+          "n_runs": 5
+        }
+      },
+      "Q3": {
+        "C": {
+          "score": 4,
+          "n_runs": 5
+        },
+        "OG": {
+          "score": 1,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "B": {
+          "score": 0,
+          "n_runs": 5
+        }
+      },
+      "Q6": {
+        "B": {
+          "score": 4,
+          "n_runs": 5
+        },
+        "OG": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 0,
+          "n_runs": 5
+        }
+      },
+      "Q2": {
+        "B": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "OG": {
+          "score": 0,
+          "n_runs": 5
+        }
+      },
+      "Q5": {
+        "OG": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "B": {
+          "score": 0,
+          "n_runs": 5
+        }
+      },
+      "Q9": {
+        "B": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 2,
+          "n_runs": 5
+        },
+        "OG": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 5,
+          "n_runs": 5
+        }
+      }
+    },
+    "llama-3.3": {
+      "Q9": {
+        "B": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 4,
+          "n_runs": 5
+        },
+        "OG": {
+          "score": 4,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 5,
+          "n_runs": 5
+        }
+      },
+      "Q7": {
+        "OG": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "B": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 5,
+          "n_runs": 5
+        }
+      },
+      "Q3": {
+        "OG": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "B": {
+          "score": 4,
+          "n_runs": 5
+        }
+      },
+      "Q1": {
+        "A": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "OG": {
+          "score": 2,
+          "n_runs": 5
+        },
+        "B": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 5,
+          "n_runs": 5
+        }
+      },
+      "Q5": {
+        "OG": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "B": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 5,
+          "n_runs": 5
+        }
+      },
+      "Q6": {
+        "OG": {
+          "score": 0,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "B": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 0,
+          "n_runs": 5
+        }
+      },
+      "Q8": {
+        "B": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "OG": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 5,
+          "n_runs": 5
+        }
+      },
+      "Q2": {
+        "A": {
+          "score": 1,
+          "n_runs": 5
+        },
+        "B": {
+          "score": 4,
+          "n_runs": 5
+        },
+        "OG": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "C": {
+          "score": 5,
+          "n_runs": 5
+        }
+      },
+      "Q4": {
+        "C": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "OG": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "A": {
+          "score": 5,
+          "n_runs": 5
+        },
+        "B": {
+          "score": 5,
+          "n_runs": 5
+        }
+      }
+    }
+  }
+}
