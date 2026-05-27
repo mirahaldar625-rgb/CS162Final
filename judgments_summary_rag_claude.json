@@ -1,0 +1,143 @@
+{
+  "generated": "2026-05-27T04:52:46.326868",
+  "evaluator_model": "claude-opus-4-7",
+  "n_valid_judgments": 144,
+  "model_question_table": {
+    "claude-opus-4-7": {
+      "Q6": 2,
+      "Q2": 0,
+      "Q3": 0,
+      "Q1": 0,
+      "Q5": 0,
+      "Q9": 4,
+      "Q7": 5,
+      "Q4": 0,
+      "Q8": 6
+    },
+    "gpt-4o": {
+      "Q6": 2,
+      "Q4": 10,
+      "Q2": 10,
+      "Q9": 0,
+      "Q3": 10,
+      "Q5": 10,
+      "Q1": 0,
+      "Q8": 10,
+      "Q7": 10
+    }
+  },
+  "variant_breakdown": {
+    "claude-opus-4-7": {
+      "Q6": {
+        "OG": {
+          "score": 2,
+          "n_runs": 6
+        }
+      },
+      "Q2": {
+        "OG": {
+          "score": 0,
+          "n_runs": 6
+        }
+      },
+      "Q3": {
+        "OG": {
+          "score": 0,
+          "n_runs": 6
+        }
+      },
+      "Q1": {
+        "OG": {
+          "score": 0,
+          "n_runs": 6
+        }
+      },
+      "Q5": {
+        "OG": {
+          "score": 0,
+          "n_runs": 6
+        }
+      },
+      "Q9": {
+        "OG": {
+          "score": 4,
+          "n_runs": 6
+        }
+      },
+      "Q7": {
+        "OG": {
+          "score": 5,
+          "n_runs": 6
+        }
+      },
+      "Q4": {
+        "OG": {
+          "score": 0,
+          "n_runs": 6
+        }
+      },
+      "Q8": {
+        "OG": {
+          "score": 6,
+          "n_runs": 6
+        }
+      }
+    },
+    "gpt-4o": {
+      "Q6": {
+        "OG": {
+          "score": 2,
+          "n_runs": 10
+        }
+      },
+      "Q4": {
+        "OG": {
+          "score": 10,
+          "n_runs": 10
+        }
+      },
+      "Q2": {
+        "OG": {
+          "score": 10,
+          "n_runs": 10
+        }
+      },
+      "Q9": {
+        "OG": {
+          "score": 0,
+          "n_runs": 10
+        }
+      },
+      "Q3": {
+        "OG": {
+          "score": 10,
+          "n_runs": 10
+        }
+      },
+      "Q5": {
+        "OG": {
+          "score": 10,
+          "n_runs": 10
+        }
+      },
+      "Q1": {
+        "OG": {
+          "score": 0,
+          "n_runs": 10
+        }
+      },
+      "Q8": {
+        "OG": {
+          "score": 10,
+          "n_runs": 10
+        }
+      },
+      "Q7": {
+        "OG": {
+          "score": 10,
+          "n_runs": 10
+        }
+      }
+    }
+  }
+}

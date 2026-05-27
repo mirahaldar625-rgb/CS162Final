@@ -25,13 +25,8 @@ else:
 # CONFIG
 # ============================================================================
 
-# Only models with native web search support
-RAG_MODELS = [
-    "claude-opus-4-7",   # Anthropic web_search tool
-    "gpt-4o",            # OpenAI Responses API web_search_preview
-    "gemini-2.5-flash",  # Google Search grounding
-    # llama-3.3 excluded: no native web search on Together AI
-]
+# Only Claude is used for this RAG run.
+RAG_MODELS = ["claude-opus-4-7"]
 
 CLAUDE_MODEL_STRING = "claude-opus-4-7"
 GPT_MODEL_STRING    = "gpt-4o"
@@ -135,42 +130,42 @@ async def run_claude_rag(og_prompts):
     client  = AsyncAnthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
     results = []
 
-    for search_enabled in [True, False]:
-        label = "search=ON " if search_enabled else "search=OFF"
-        print(f"\n  [Claude] {label}")
+    search_enabled = True
+    label = "search=ON"
+    print(f"\n  [Claude] {label}")
 
-        for run in range(1, RUNS_PER_CONDITION + 1):
-            for prompt in og_prompts:
-                pid = f"{prompt['question_id']}_OG_rag_{'on' if search_enabled else 'off'}_{run}"
-                print(f"    {pid}: ", end="", flush=True)
-                start = time.time()
+    for run in range(1, RUNS_PER_CONDITION + 1):
+        for prompt in og_prompts:
+            pid = f"{prompt['question_id']}_OG_rag_on_{run}"
+            print(f"    {pid}: ", end="", flush=True)
+            start = time.time()
 
-                try:
-                    text, citations = await call_claude_once(
-                        client, prompt["text"], search_enabled
-                    )
-                    elapsed = time.time() - start
-                    print(f"✓ {elapsed:.1f}s | {len(text)} chars"
-                          + (f" | {len(citations)} citations" if citations else ""))
-                    record = make_record(
-                        "claude-opus-4-7", prompt, run,
-                        search_enabled, "success",
-                        response=text, citations=citations
-                    )
-                except Exception as e:
-                    elapsed = time.time() - start
-                    print(f"✗ {str(e)[:60]}")
-                    record = make_record(
-                        "claude-opus-4-7", prompt, run,
-                        search_enabled, "error", error=str(e)
-                    )
+            try:
+                text, citations = await call_claude_once(
+                    client, prompt["text"], search_enabled
+                )
+                elapsed = time.time() - start
+                print(f"✓ {elapsed:.1f}s | {len(text)} chars"
+                      + (f" | {len(citations)} citations" if citations else ""))
+                record = make_record(
+                    "claude-opus-4-7", prompt, run,
+                    search_enabled, "success",
+                    response=text, citations=citations
+                )
+            except Exception as e:
+                elapsed = time.time() - start
+                print(f"✗ {str(e)[:60]}")
+                record = make_record(
+                    "claude-opus-4-7", prompt, run,
+                    search_enabled, "error", error=str(e)
+                )
 
-                record["prompt_id"] = pid
-                results.append(record)
-                write_result(record)
+            record["prompt_id"] = pid
+            results.append(record)
+            write_result(record)
 
-                # Throttle: Claude has no batch support for tools
-                await asyncio.sleep(0.5)
+            # Throttle: Claude has no batch support for tools
+            await asyncio.sleep(0.5)
 
     print(f"\n  [Claude] Done. {sum(1 for r in results if r['status']=='success')} succeeded.")
     return results
@@ -221,7 +216,7 @@ def run_gpt_rag(og_prompts):
     results = []
 
     for search_enabled in [True, False]:
-        label = "search=ON " if search_enabled else "search=OFF"
+        label = "search=ON " 
         print(f"\n  [GPT-4o] {label}")
 
         for run in range(1, RUNS_PER_CONDITION + 1):
@@ -365,10 +360,10 @@ def check_env():
 
 def run_rag_extension():
     print("\n" + "="*80)
-    print("RAG EXTENSION — WEB SEARCH ON vs OFF")
-    print("Models: Claude, GPT-4o, Gemini  |  Llama excluded (no native search)")
-    print(f"Design: 9 OG prompts × {RUNS_PER_CONDITION} runs × 2 conditions × 3 models = "
-          f"{9 * RUNS_PER_CONDITION * 2 * 3} total calls")
+    print("RAG EXTENSION — WEB SEARCH ON")
+    print("Model: Claude")
+    print(f"Design: 9 OG prompts × {RUNS_PER_CONDITION} runs × 1 condition × 1 model = "
+        f"{9 * RUNS_PER_CONDITION} total calls")
     print("="*80 + "\n")
 
     if not check_env():
@@ -385,12 +380,6 @@ def run_rag_extension():
 
     # Claude — async
     all_results += asyncio.run(run_claude_rag(og_prompts))
-
-    # GPT-4o — sync Responses API
-    all_results += run_gpt_rag(og_prompts)
-
-    # Gemini — sync with grounding
-    all_results += run_gemini_rag(og_prompts)
 
     # Summary
     print("\n" + "="*80)

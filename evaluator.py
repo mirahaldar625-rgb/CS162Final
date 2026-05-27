@@ -15,10 +15,11 @@ matching the Omiye et al. (2023) methodology.
 import json
 import os
 import time
-import tempfile
 import argparse
+import concurrent.futures
+import threading
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -40,7 +41,7 @@ OUTPUT_FILE      = "judgments_gpt.jsonl"
 SUMMARY_FILE     = "judgments_summary_gpt.json"
 EVALUATOR_MODEL  = "gpt-4o"
 POLL_INTERVAL    = 30
-OPENAI_EVALUATOR_MODEL = "gpt-4o"
+MAX_WORKERS      = 10
 
 # ============================================================================
 # RUBRIC
@@ -308,7 +309,7 @@ def make_judgment_record(response_row: dict, judgment: int, reasoning: str, eval
         "judgment":    judgment,
         "reasoning":   reasoning,
         "evaluator":   evaluator_model,
-        "timestamp":   datetime.utcnow().isoformat(),
+        "timestamp":   datetime.now(timezone.utc).isoformat(),
     }
 
 # ============================================================================
@@ -328,7 +329,6 @@ def run_anthropic_batch(responses: list, prompts_map: dict, evaluator_model: str
                 params=MessageCreateParamsNonStreaming(
                     model=evaluator_model,
                     max_tokens=256,
-                    temperature=0.0,
                     messages=[{"role": "user", "content": prompt}],
                 ),
             )
@@ -368,69 +368,41 @@ def run_anthropic_batch(responses: list, prompts_map: dict, evaluator_model: str
     return results
 
 
-def run_openai_batch(responses: list, prompts_map: dict, evaluator_model: str) -> list:
+def run_openai_sync(responses: list, prompts_map: dict, evaluator_model: str) -> list:
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
-        for idx, r in enumerate(responses):
-            q_text = prompts_map.get(r["prompt_id"], {}).get("text", r["prompt_id"])
-            prompt = build_eval_prompt(r["question_id"], q_text, r["response"])
-            line = {
-                "custom_id": f"req_{idx:04d}",
-                "method": "POST",
-                "url": "/v1/chat/completions",
-                "body": {
-                    "model": evaluator_model,
-                    "messages": [{"role": "user", "content": prompt}],
-                    "max_tokens": 256,
-                    "temperature": 0.0,
-                },
-            }
-            f.write(json.dumps(line) + "\n")
-        tmp_path = f.name
-
-    with open(tmp_path, "rb") as f:
-        uploaded = client.files.create(file=f, purpose="batch")
-    os.unlink(tmp_path)
-    print(f"  File uploaded: {uploaded.id}")
-
-    batch = client.batches.create(
-        input_file_id=uploaded.id,
-        endpoint="/v1/chat/completions",
-        completion_window="24h",
-    )
-    print(f"  Batch created: {batch.id}")
-
-    while True:
-        batch = client.batches.retrieve(batch.id)
-        counts = batch.request_counts
-        print(f"  Status: {batch.status} | completed={counts.completed} failed={counts.failed} total={counts.total}")
-        if batch.status in ("completed", "failed", "expired", "cancelled"):
-            break
-        time.sleep(POLL_INTERVAL)
-
-    if batch.status != "completed":
-        print(f"  Batch ended with status: {batch.status}")
-        return []
-
-    result_content = client.files.content(batch.output_file_id).text
-    response_map = {f"req_{idx:04d}": r for idx, r in enumerate(responses)}
-
     results = []
-    for line in result_content.strip().split("\n"):
-        item = json.loads(line)
-        r = response_map[item["custom_id"]]
+    lock = threading.Lock()
+    done_count = [0]
 
-        if item["response"]["status_code"] == 200:
-            text = item["response"]["body"]["choices"][0]["message"]["content"]
+    def score_one(r):
+        q_text = prompts_map.get(r["prompt_id"], {}).get("text", r["prompt_id"])
+        prompt = build_eval_prompt(r["question_id"], q_text, r["response"])
+        try:
+            completion = client.chat.completions.create(
+                model=evaluator_model,
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=256,
+                temperature=0.0,
+                response_format={"type": "json_object"},
+            )
+            text = completion.choices[0].message.content
             judgment, reasoning = parse_judgment_text(text)
-        else:
-            judgment = -1
-            reasoning = f"EVALUATOR_API_ERROR: {item['response']['body']}"
+        except Exception as e:
+            judgment, reasoning = -1, f"EVALUATOR_API_ERROR: {e}"
 
         record = make_judgment_record(r, judgment, reasoning, evaluator_model)
-        results.append(record)
-        append_judgment(record)
+        with lock:
+            append_judgment(record)
+            results.append(record)
+            done_count[0] += 1
+            if done_count[0] % 20 == 0 or done_count[0] == len(responses):
+                print(f"  [{done_count[0]}/{len(responses)}] scored...")
+        return record
+
+    print(f"  Scoring {len(responses)} responses with {evaluator_model} "
+          f"(max_workers={MAX_WORKERS})...")
+    with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        list(executor.map(score_one, responses))
 
     ok = sum(1 for r in results if r["judgment"] in (0, 1))
     print(f"  Done. {ok}/{len(results)} scored successfully.")
@@ -439,7 +411,7 @@ def run_openai_batch(responses: list, prompts_map: dict, evaluator_model: str) -
 
 def run_batch(responses: list, prompts_map: dict, evaluator_model: str) -> list:
     if evaluator_model.startswith("gpt-"):
-        return run_openai_batch(responses, prompts_map, evaluator_model)
+        return run_openai_sync(responses, prompts_map, evaluator_model)
     return run_anthropic_batch(responses, prompts_map, evaluator_model)
 
 # ============================================================================
@@ -513,13 +485,35 @@ def main():
     parser.add_argument(
         "--evaluator-model",
         default=os.getenv("EVALUATOR_MODEL", EVALUATOR_MODEL),
-        choices=[EVALUATOR_MODEL, OPENAI_EVALUATOR_MODEL],
-        help="Model to use as the evaluator.",
+        help="Model to use as the evaluator (e.g. gpt-4o, claude-opus-4-7).",
+    )
+    parser.add_argument(
+        "--input",
+        default=None,
+        help="Input JSONL file of responses to evaluate (default: results_comp.jsonl).",
+    )
+    parser.add_argument(
+        "--output",
+        default=None,
+        help="Output JSONL file for per-response judgments.",
+    )
+    parser.add_argument(
+        "--summary",
+        default=None,
+        help="Output JSON file for the model × question summary table.",
     )
     args = parser.parse_args()
 
     evaluator_model = args.evaluator_model
     api_key_name = "OPENAI_API_KEY" if evaluator_model.startswith("gpt-") else "ANTHROPIC_API_KEY"
+
+    global INPUT_FILE, OUTPUT_FILE, SUMMARY_FILE
+    if args.input:
+        INPUT_FILE = args.input
+    if args.output:
+        OUTPUT_FILE = args.output
+    if args.summary:
+        SUMMARY_FILE = args.summary
 
     if not os.getenv(api_key_name):
         print(f"ERROR: {api_key_name} not set.")
